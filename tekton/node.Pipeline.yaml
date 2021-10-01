@@ -1,0 +1,36 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline # Recipe, PipelineRun needed
+metadata:
+  name: mohamed-keerthana-nodejs-app-deploy
+spec:
+  params:
+    - name: source-repo
+      type: String
+      description: Source code repository
+  workspace: 
+    - name: pipeline-shared-data
+  tasks:
+    - name: clone-repository
+      params:
+        - name: url
+          value: "$(params.source-repo)"
+      workspaces:
+        - name: output
+          workspace: pipeline-shared-data
+      taskRef:
+        name: git-clone
+        kind: ClusterTask # verify if cluster already has this task
+    - name: create-image
+      runAfter:
+        - run-tests
+      taskRef:
+        name: buildah # build and push
+        kind: ClusterTask
+      params:
+        - name: IMAGE
+          value: "$(params.source-image):$(tasks.clone-repository.results.commit)"
+      workspaces:
+        - name: source
+          workspace: pipeline-shared-data # the volume name
+  
