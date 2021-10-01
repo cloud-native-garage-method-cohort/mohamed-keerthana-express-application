@@ -6,9 +6,12 @@ metadata:
 spec:
   params:
     - name: source-repo
-      type: String
+      type: string
       description: Source code repository
-  workspace: 
+    - name: source-image
+      type: string
+      description: Source image
+  workspaces: 
     - name: pipeline-shared-data
   tasks:
     - name: clone-repository
@@ -20,7 +23,18 @@ spec:
           workspace: pipeline-shared-data
       taskRef:
         name: git-clone
-        kind: ClusterTask # verify if cluster already has this task
+    - name: run-tests
+      taskRef:
+        name: npm
+      runAfter:
+        - clone-repository
+      params:
+        - name: ARGS
+          value:
+            - install-ci-test
+      workspaces:
+        - name: source # mounted in the directory source in the task
+          workspace: pipeline-shared-data # the volume name
     - name: create-image
       runAfter:
         - run-tests

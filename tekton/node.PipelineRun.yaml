@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: node-app-run-
+spec:
+  serviceAccountName: build-bot
+  pipelineRef:
+    name: mohamed-keerthana-nodejs-app-deploy
+  params:
+    - name: source-repo
+      value: https://github.com/cloud-native-garage-method-cohort/mohamed-keerthana-express-application
+    - name: source-image
+      value: quay.io/mohameddounnani94/express-app
+  workspaces:
+    - name: pipeline-shared-data
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: 1Gi
+          accessModes:
+            - ReadWriteOnce
