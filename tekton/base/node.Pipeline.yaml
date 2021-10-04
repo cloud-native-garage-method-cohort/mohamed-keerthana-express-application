@@ -11,6 +11,8 @@ spec:
     - name: source-image
       type: string
       description: Source image
+    - name: sha # support new param
+      type: string
     - name: app-name
       type: string
       description: app name
@@ -21,6 +23,8 @@ spec:
       params:
         - name: url
           value: "$(params.source-repo)"
+        - name: revision
+          value: "$(params.sha)" # use new param
       workspaces:
         - name: output
           workspace: pipeline-shared-data
