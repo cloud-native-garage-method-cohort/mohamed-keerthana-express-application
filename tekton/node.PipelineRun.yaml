@@ -7,6 +7,8 @@ spec:
   pipelineRef:
     name: mohamed-keerthana-nodejs-app-deploy
   params:
+    - name: app-name
+      value: express-app
     - name: source-repo
       value: https://github.com/cloud-native-garage-method-cohort/mohamed-keerthana-express-application
     - name: source-image
